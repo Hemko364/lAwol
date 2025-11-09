@@ -81,3 +81,12 @@ ios/Flutter/Debug.xcconfig
 ios/Flutter/Release.xcconfig
 ios/Runner.xcodeproj/project.pbxproj
 ios/Runner.xcworkspace/contents.xcworkspacedata
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.h
+linux/flutter/generated_plugins.cmake
+linux/flutter/ephemeral/.plugin_symlinks/flutter_secure_storage_linux
+linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux
+macos/Flutter/ephemeral/flutter_export_environment.sh
+macos/Flutter/ephemeral/Flutter-Generated.xcconfig
+windows/flutter/ephemeral/.plugin_symlinks/firebase_auth
+windows/flutter/ephemeral/.plugin_symlinks/firebase_core
