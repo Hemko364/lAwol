@@ -31,7 +31,18 @@ jobs:
       with:
         channel: stable
     - run: flutter pub get
-    - run: flutter pub run build_runner build
+    - run: |
+        export API_KEY_WEB=$API_KEY_WEB
+        export APP_ID_WEB=$APP_ID_WEB
+        export MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID
+        export PROJECT_ID=$PROJECT_ID
+        export AUTH_DOMAIN=$AUTH_DOMAIN
+        export STORAGE_BUCKET=$STORAGE_BUCKET
+        export API_KEY_ANDROID=$API_KEY_ANDROID
+        export APP_ID_ANDROID=$APP_ID_ANDROID
+        export API_KEY_IOS=$API_KEY_IOS
+        export APP_ID_IOS=$APP_ID_IOS
+        flutter pub run build_runner build
     - run: flutter clean
     - run: flutter build apk --release
     - uses: actions/upload-artifact@v4
@@ -58,7 +69,18 @@ jobs:
       with:
         channel: stable
     - run: flutter pub get
-    - run: flutter pub run build_runner build
+    - run: |
+        export API_KEY_WEB=$API_KEY_WEB
+        export APP_ID_WEB=$APP_ID_WEB
+        export MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID
+        export PROJECT_ID=$PROJECT_ID
+        export AUTH_DOMAIN=$AUTH_DOMAIN
+        export STORAGE_BUCKET=$STORAGE_BUCKET
+        export API_KEY_ANDROID=$API_KEY_ANDROID
+        export APP_ID_ANDROID=$APP_ID_ANDROID
+        export API_KEY_IOS=$API_KEY_IOS
+        export APP_ID_IOS=$APP_ID_IOS
+        flutter pub run build_runner build
     - run: flutter clean
     - run: flutter build web --release
     - uses: peaceiris/actions-gh-pages@v3
@@ -88,7 +110,18 @@ jobs:
     - run: flutter pub get
     - run: cd ios && pod repo update
     - run: rm ios/Podfile.lock
-    - run: flutter pub run build_runner build
+    - run: |
+        export API_KEY_WEB=$API_KEY_WEB
+        export APP_ID_WEB=$APP_ID_WEB
+        export MESSAGING_SENDER_ID=$MESSAGING_SENDER_ID
+        export PROJECT_ID=$PROJECT_ID
+        export AUTH_DOMAIN=$AUTH_DOMAIN
+        export STORAGE_BUCKET=$STORAGE_BUCKET
+        export API_KEY_ANDROID=$API_KEY_ANDROID
+        export APP_ID_ANDROID=$APP_ID_ANDROID
+        export API_KEY_IOS=$API_KEY_IOS
+        export APP_ID_IOS=$APP_ID_IOS
+        flutter pub run build_runner build
     - run: flutter clean
     - run: flutter build ipa --release --no-codesign
     - uses: actions/upload-artifact@v4
