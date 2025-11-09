@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
-import 'firebase_env.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -30,28 +29,28 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static FirebaseOptions get web => FirebaseOptions(
-        apiKey: FirebaseEnv.apiKeyWeb,
-        appId: FirebaseEnv.appIdWeb,
-        messagingSenderId: FirebaseEnv.messagingSenderId,
-        projectId: FirebaseEnv.projectId,
-        authDomain: FirebaseEnv.authDomain,
-        storageBucket: FirebaseEnv.storageBucket,
-      );
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
+    appId: '1:613558748519:web:fe915e85b5a3d228dc9bc2',
+    messagingSenderId: '613558748519',
+    projectId: 'lawol-e2e60',
+    authDomain: 'lawol-e2e60.firebaseapp.com',
+    storageBucket: 'lawol-e2e60.firebasestorage.app',
+  );
 
-  static FirebaseOptions get android => FirebaseOptions(
-        apiKey: FirebaseEnv.apiKeyAndroid,
-        appId: FirebaseEnv.appIdAndroid,
-        messagingSenderId: FirebaseEnv.messagingSenderId,
-        projectId: FirebaseEnv.projectId,
-        storageBucket: FirebaseEnv.storageBucket,
-      );
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyCqETRguwdAo1HAOW9NCdm9YXX0wrrOC9g',
+    appId: '1:613558748519:android:fe915e85b5a3d228dc9bc2',
+    messagingSenderId: '613558748519',
+    projectId: 'lawol-e2e60',
+    storageBucket: 'lawol-e2e60.firebasestorage.app',
+  );
 
-  static FirebaseOptions get ios => FirebaseOptions(
-        apiKey: FirebaseEnv.apiKeyIos,
-        appId: FirebaseEnv.appIdIos,
-        messagingSenderId: FirebaseEnv.messagingSenderId,
-        projectId: FirebaseEnv.projectId,
-        storageBucket: FirebaseEnv.storageBucket,
-      );
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
+    appId: '1:613558748519:ios:fe915e85b5a3d228dc9bc2',
+    messagingSenderId: '613558748519',
+    projectId: 'lawol-e2e60',
+    storageBucket: 'lawol-e2e60.firebasestorage.app',
+  );
 }
