@@ -22,12 +22,6 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
-      case TargetPlatform.macOS:
-        return macos;
-      case TargetPlatform.windows:
-        return windows;
-      case TargetPlatform.linux:
-        return linux;
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -37,7 +31,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:web:fe915e85b5a3d228dc9bc2', // Placeholder, replace with actual
+    appId: '1:613558748519:web:fe915e85b5a3d228dc9bc2',
     messagingSenderId: '613558748519',
     projectId: 'lawol-e2e60',
     authDomain: 'lawol-e2e60.firebaseapp.com',
@@ -54,31 +48,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:ios:fe915e85b5a3d228dc9bc2', // Placeholder
-    messagingSenderId: '613558748519',
-    projectId: 'lawol-e2e60',
-    storageBucket: 'lawol-e2e60.firebasestorage.app',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:ios:fe915e85b5a3d228dc9bc2', // Same as iOS
-    messagingSenderId: '613558748519',
-    projectId: 'lawol-e2e60',
-    storageBucket: 'lawol-e2e60.firebasestorage.app',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:web:fe915e85b5a3d228dc9bc2', // Same as web
-    messagingSenderId: '613558748519',
-    projectId: 'lawol-e2e60',
-    storageBucket: 'lawol-e2e60.firebasestorage.app',
-  );
-
-  static const FirebaseOptions linux = FirebaseOptions(
-    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:web:fe915e85b5a3d228dc9bc2', // Same as web
+    appId: '1:613558748519:ios:fe915e85b5a3d228dc9bc2',
     messagingSenderId: '613558748519',
     projectId: 'lawol-e2e60',
     storageBucket: 'lawol-e2e60.firebasestorage.app',
