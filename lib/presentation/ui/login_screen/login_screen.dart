@@ -62,21 +62,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signInWithGoogle() async {
-    print('🔍 Bouton Google cliqué');
     setState(() => _isLoading = true);
     try {
-      print('🔍 Appel du service Google Sign-In...');
       await _authService.signInWithGoogle();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Signed in with Google successfully')),
       );
     } on FirebaseAuthException catch (e) {
-      print('❌ FirebaseAuthException: ${e.code} - ${e.message}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? 'Google sign in failed')),
       );
     } catch (e) {
-      print('❌ Erreur générale: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Google sign in failed: $e')),
       );

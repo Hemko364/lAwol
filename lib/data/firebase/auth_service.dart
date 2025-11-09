@@ -45,11 +45,8 @@ class FirebaseAuthService {
   // Sign in with Google
   Future<UserCredential> signInWithGoogle() async {
     try {
-      print('🔍 Début de Google Sign-In...');
-
       if (kIsWeb) {
         // Sur le web, utilise Firebase Auth directement avec Google Provider
-        print('🔍 Web: Utilisation de Firebase Auth avec Google Provider...');
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
         googleProvider.addScope('email');
         googleProvider.addScope('profile');
@@ -58,37 +55,28 @@ class FirebaseAuthService {
         return await _auth.signInWithPopup(googleProvider);
       } else {
         // Sur mobile, utilise Google Sign-In normalement
-        print('🔍 Mobile: Connexion Google normale...');
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
         if (googleUser == null) {
-          print('❌ Utilisateur a annulé la connexion Google');
           throw FirebaseAuthException(
             code: 'ERROR_ABORTED_BY_USER',
             message: 'Sign in aborted by user',
           );
         }
 
-        print('✅ Utilisateur Google obtenu: ${googleUser.email}');
         final GoogleSignInAuthentication googleAuth =
             await googleUser.authentication;
-        print(
-          '🔍 Tokens obtenus - AccessToken: ${googleAuth.accessToken != null}, IdToken: ${googleAuth.idToken != null}',
-        );
 
         final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
 
-        print('🔍 Credential créé, connexion à Firebase...');
         final result = await _auth.signInWithCredential(credential);
-        print('✅ Connexion Firebase réussie: ${result.user?.email}');
 
         return result;
       }
     } catch (e) {
-      print('❌ Erreur Google Sign-In: $e');
       rethrow;
     }
   }
