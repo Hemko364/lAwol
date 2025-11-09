@@ -31,6 +31,7 @@ jobs:
       with:
         channel: stable
     - run: flutter pub get
+    - run: flutter clean
     - run: flutter build apk --release
     - uses: actions/upload-artifact@v4
       with:
@@ -56,6 +57,7 @@ jobs:
       with:
         channel: stable
     - run: flutter pub get
+    - run: flutter clean
     - run: flutter build web --release
     - uses: peaceiris/actions-gh-pages@v3
       if: github.ref == 'refs/heads/develop'
@@ -84,6 +86,7 @@ jobs:
     - run: flutter pub get
     - run: cd ios && pod repo update
     - run: rm ios/Podfile.lock
+    - run: flutter clean
     - run: flutter build ipa --release --no-codesign
     - uses: actions/upload-artifact@v4
       with:
