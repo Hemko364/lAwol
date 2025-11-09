@@ -36,6 +36,9 @@ migrate_working_dir/
 # Environment variables
 .env
 
+# Generated files with sensitive data
+lib/firebase_env.g.dart
+
 # Symbolication related
 app.*.symbols
 
