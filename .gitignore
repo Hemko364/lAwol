@@ -33,6 +33,12 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Environment variables
+.env
+
+# Generated files with sensitive data
+lib/firebase_env.g.dart
+
 # Symbolication related
 app.*.symbols
 
@@ -43,3 +49,44 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+pubspec.lock
+ios/Flutter/Debug.xcconfig
+ios/Flutter/Release.xcconfig
+macos/Flutter/Flutter-Debug.xcconfig
+macos/Podfile
+macos/Flutter/Flutter-Release.xcconfig
+windows/flutter/generated_plugins.cmake
+windows/flutter/generated_plugin_registrant.cc
+macos/Flutter/GeneratedPluginRegistrant.swift
+windows/flutter/generated_plugins.cmake
+windows/flutter/generated_plugin_registrant.cc
+macos/Flutter/GeneratedPluginRegistrant.swift
+macos/Flutter/Flutter-Release.xcconfig
+macos/Flutter/Flutter-Debug.xcconfig
+ios/Runner.xcworkspace/contents.xcworkspacedata
+ios/Runner.xcodeproj/project.pbxproj
+ios/Flutter/Release.xcconfig
+ios/Flutter/Debug.xcconfig
+windows/flutter/generated_plugins.cmake
+windows/flutter/generated_plugin_registrant.cc
+macos/Flutter/GeneratedPluginRegistrant.swift
+macos/Flutter/Flutter-Release.xcconfig
+macos/Flutter/Flutter-Debug.xcconfig
+ios/Runner.xcworkspace/contents.xcworkspacedata
+ios/Runner.xcodeproj/project.pbxproj
+ios/Flutter/Release.xcconfig
+ios/Flutter/Debug.xcconfig
+.flutter-plugins-dependencies 2
+ios/Flutter/Debug.xcconfig
+ios/Flutter/Release.xcconfig
+ios/Runner.xcodeproj/project.pbxproj
+ios/Runner.xcworkspace/contents.xcworkspacedata
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.h
+linux/flutter/generated_plugins.cmake
+linux/flutter/ephemeral/.plugin_symlinks/flutter_secure_storage_linux
+linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux
+macos/Flutter/ephemeral/flutter_export_environment.sh
+macos/Flutter/ephemeral/Flutter-Generated.xcconfig
+windows/flutter/ephemeral/.plugin_symlinks/firebase_auth
+windows/flutter/ephemeral/.plugin_symlinks/firebase_core

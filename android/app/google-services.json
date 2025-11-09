@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "613558748519",
+    "project_id": "lawol-e2e60",
+    "storage_bucket": "lawol-e2e60.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613558748519:android:fe915e85b5a3d228dc9bc2",
+        "android_client_info": {
+          "package_name": "com.example.lawol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613558748519-8igm3bh1noru7f4mgdpien4e359g1jh4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqETRguwdAo1HAOW9NCdm9YXX0wrrOC9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613558748519-8igm3bh1noru7f4mgdpien4e359g1jh4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "613558748519-fk05c613gubkm1ofvfg4mn0t920971ru.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lawol"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
