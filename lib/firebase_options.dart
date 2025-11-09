@@ -1,17 +1,10 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
+/// Loaded from environment variables for security.
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -35,52 +28,52 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:web:fe915e85b5a3d228dc9bc2', // Placeholder, replace with actual
-    messagingSenderId: '613558748519',
-    projectId: 'lawol-e2e60',
-    authDomain: 'lawol-e2e60.firebaseapp.com',
-    storageBucket: 'lawol-e2e60.firebasestorage.app',
-  );
+  static FirebaseOptions get web => FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_API_KEY_WEB']!,
+        appId: dotenv.env['FIREBASE_APP_ID_WEB']!,
+        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+        authDomain: dotenv.env['FIREBASE_AUTH_DOMAIN']!,
+        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+      );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCqETRguwdAo1HAOW9NCdm9YXX0wrrOC9g',
-    appId: '1:613558748519:android:fe915e85b5a3d228dc9bc2',
-    messagingSenderId: '613558748519',
-    projectId: 'lawol-e2e60',
-    storageBucket: 'lawol-e2e60.firebasestorage.app',
-  );
+  static FirebaseOptions get android => FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_API_KEY_ANDROID']!,
+        appId: dotenv.env['FIREBASE_APP_ID_ANDROID']!,
+        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+      );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:ios:fe915e85b5a3d228dc9bc2', // Placeholder
-    messagingSenderId: '613558748519',
-    projectId: 'lawol-e2e60',
-    storageBucket: 'lawol-e2e60.firebasestorage.app',
-  );
+  static FirebaseOptions get ios => FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_API_KEY_IOS']!,
+        appId: dotenv.env['FIREBASE_APP_ID_IOS']!,
+        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+      );
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:ios:fe915e85b5a3d228dc9bc2', // Same as iOS
-    messagingSenderId: '613558748519',
-    projectId: 'lawol-e2e60',
-    storageBucket: 'lawol-e2e60.firebasestorage.app',
-  );
+  static FirebaseOptions get macos => FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_API_KEY_IOS']!, // Same as iOS
+        appId: dotenv.env['FIREBASE_APP_ID_IOS']!,
+        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+      );
 
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:web:fe915e85b5a3d228dc9bc2', // Same as web
-    messagingSenderId: '613558748519',
-    projectId: 'lawol-e2e60',
-    storageBucket: 'lawol-e2e60.firebasestorage.app',
-  );
+  static FirebaseOptions get windows => FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_API_KEY_WEB']!, // Same as web
+        appId: dotenv.env['FIREBASE_APP_ID_WEB']!,
+        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+      );
 
-  static const FirebaseOptions linux = FirebaseOptions(
-    apiKey: 'AIzaSyB_g3IUod_fTYtWeOnu_lSE-V81cn8GV5w',
-    appId: '1:613558748519:web:fe915e85b5a3d228dc9bc2', // Same as web
-    messagingSenderId: '613558748519',
-    projectId: 'lawol-e2e60',
-    storageBucket: 'lawol-e2e60.firebasestorage.app',
-  );
+  static FirebaseOptions get linux => FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_API_KEY_WEB']!, // Same as web
+        appId: dotenv.env['FIREBASE_APP_ID_WEB']!,
+        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
+      );
 }
