@@ -4,7 +4,9 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:flutter/foundation.dart';
 
 class FirebaseAuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth;
+
+  FirebaseAuthService(this._auth);
 
   // Configuration Google Sign-In
   final GoogleSignIn _googleSignIn = GoogleSignIn(

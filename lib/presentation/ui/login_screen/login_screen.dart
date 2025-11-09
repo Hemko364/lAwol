@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../data/firebase/auth_service.dart';
+import '../../../core/di/injection.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,10 +11,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final FirebaseAuthService _authService = FirebaseAuthService();
+  late final FirebaseAuthService _authService;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = getIt<FirebaseAuthService>();
+  }
 
   @override
   void dispose() {
@@ -40,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(e.message ?? 'Sign in failed')),
       );
     } finally {
+      if (!mounted) return;
       setState(() => _isLoading = false);
     }
   }
@@ -61,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(e.message ?? 'Sign up failed')),
       );
     } finally {
+      if (!mounted) return;
       setState(() => _isLoading = false);
     }
   }
@@ -84,6 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text('Google sign in failed: $e')),
       );
     } finally {
+      if (!mounted) return;
       setState(() => _isLoading = false);
     }
   }
@@ -102,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(e.message ?? 'Apple sign in failed')),
       );
     } finally {
+      if (!mounted) return;
       setState(() => _isLoading = false);
     }
   }
