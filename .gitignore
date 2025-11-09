@@ -73,3 +73,8 @@ ios/Runner.xcworkspace/contents.xcworkspacedata
 ios/Runner.xcodeproj/project.pbxproj
 ios/Flutter/Release.xcconfig
 ios/Flutter/Debug.xcconfig
+.flutter-plugins-dependencies 2
+ios/Flutter/Debug.xcconfig
+ios/Flutter/Release.xcconfig
+ios/Runner.xcodeproj/project.pbxproj
+ios/Runner.xcworkspace/contents.xcworkspacedata

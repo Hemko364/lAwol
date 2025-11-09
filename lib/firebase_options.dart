@@ -15,12 +15,6 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
-      case TargetPlatform.macOS:
-        return macos;
-      case TargetPlatform.windows:
-        return windows;
-      case TargetPlatform.linux:
-        return linux;
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -48,30 +42,6 @@ class DefaultFirebaseOptions {
   static FirebaseOptions get ios => FirebaseOptions(
         apiKey: dotenv.env['FIREBASE_API_KEY_IOS']!,
         appId: dotenv.env['FIREBASE_APP_ID_IOS']!,
-        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
-        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
-        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
-      );
-
-  static FirebaseOptions get macos => FirebaseOptions(
-        apiKey: dotenv.env['FIREBASE_API_KEY_IOS']!, // Same as iOS
-        appId: dotenv.env['FIREBASE_APP_ID_IOS']!,
-        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
-        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
-        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
-      );
-
-  static FirebaseOptions get windows => FirebaseOptions(
-        apiKey: dotenv.env['FIREBASE_API_KEY_WEB']!, // Same as web
-        appId: dotenv.env['FIREBASE_APP_ID_WEB']!,
-        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
-        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
-        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
-      );
-
-  static FirebaseOptions get linux => FirebaseOptions(
-        apiKey: dotenv.env['FIREBASE_API_KEY_WEB']!, // Same as web
-        appId: dotenv.env['FIREBASE_APP_ID_WEB']!,
         messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
         projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
         storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
