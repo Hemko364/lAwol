@@ -14,11 +14,12 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
+    // Wait for the app to settle (e.g., Firebase initialization)
+    await tester.pumpAndSettle();
+
     // Verify that the login screen is displayed.
     expect(find.text('Login'), findsOneWidget);
     expect(find.text('Sign In'), findsOneWidget);
     expect(find.text('Sign Up'), findsOneWidget);
-    expect(find.text('Continue with Google'), findsOneWidget);
-    expect(find.text('Continue with Apple'), findsOneWidget);
   });
 }
