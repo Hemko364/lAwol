@@ -60,6 +60,7 @@ jobs:
       with:
         channel: stable
     - run: flutter pub get
+    - run: cd ios && pod repo update
     - run: flutter build ipa --release --no-codesign
     - uses: actions/upload-artifact@v4
       with:
