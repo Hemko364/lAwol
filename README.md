@@ -196,4 +196,51 @@ logs(id, type, payload_json, created_at)
 * Commencer par les schémas SVG + recherche (impact UX maximal) avant IA.
 * Back‑office Retool en parallèle (accélère l’opérationnel).
 
+Parcours & logique d’affichage
+
+1. Entrée utilisateur
+
+
+
+Photo de la pièce → Vision/OCR → (réf OEM ? / famille ? / pièce ?)
+
+Photo de la référence → OCR → normalisation → lookup.
+
+Code OEM saisi → lookup direct.
+
+VIN/immat saisi → décodage véhicule → filtrage compatibilité.
+
+
+2. Résolution d’identification (moteur)
+
+
+
+On retourne un objet identification avec :
+
+niveau: "piece" | "famille" | "vehicule_seulement"
+
+confiance: 0–1
+
+piece_id (si connu) ou famille_id
+
+vehicule (marque/modèle/année dérivés du VIN si dispo)
+
+
+
+3. Affichage UI (priorité au schéma)
+
+
+
+Si piece_id connu → afficher fiche + schéma ciblé si dispo (zone surlignée).
+
+Sinon si famille_id connu → afficher schéma de la famille + lister les pièces candidates.
+
+Sinon → liste de catégories + recherche texte (fallback).
+
+
+4. Fallback “pas de schéma”
+
+
+
+On montre la fiche/liste (nom, compatibilités, photos, docs) + un bouton “Signaler l’absence de schéma”.
 
