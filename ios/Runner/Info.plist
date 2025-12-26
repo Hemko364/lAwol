@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Cette application a besoin d'accéder à la caméra pour scanner des pièces.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Cette application a besoin d'accéder à la galerie pour importer des photos de pièces.</string>
 </dict>
 </plist>

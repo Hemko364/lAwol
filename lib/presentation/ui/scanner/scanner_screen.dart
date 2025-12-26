@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ScannerScreen extends StatelessWidget {
   const ScannerScreen({super.key});
@@ -50,7 +51,7 @@ class ScannerScreen extends StatelessWidget {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () => _handleCameraScan(context),
                       borderRadius: BorderRadius.circular(32),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +107,7 @@ class ScannerScreen extends StatelessWidget {
 
               // Import Button
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () => _handleGalleryImport(context),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 24),
                   shape: RoundedRectangleBorder(
@@ -180,6 +181,54 @@ class ScannerScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _handleCameraScan(BuildContext context) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.camera);
+
+      if (!context.mounted) return;
+
+      if (image != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Image capturée : ${image.path}'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        // TODO: Implémenter la logique OCR ici
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur : $e'), backgroundColor: Colors.red),
+      );
+    }
+  }
+
+  Future<void> _handleGalleryImport(BuildContext context) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+      if (!context.mounted) return;
+
+      if (image != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Image sélectionnée : ${image.path}'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        // TODO: Implémenter la logique OCR ici
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur : $e'), backgroundColor: Colors.red),
+      );
+    }
   }
 
   Widget _buildTipItem(String text) {

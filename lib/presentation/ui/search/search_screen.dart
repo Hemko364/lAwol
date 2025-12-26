@@ -25,13 +25,15 @@ class SearchScreen extends StatelessWidget {
                       color: Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Nom, référence ou véhicule...',
+                    child: TextField(
+                      textCapitalization: TextCapitalization.characters,
+                      decoration: const InputDecoration(
+                        hintText: 'VIN (17 car.) ou Code OEM...',
                         border: InputBorder.none,
                         icon: Icon(Icons.search, color: Colors.grey),
                         contentPadding: EdgeInsets.symmetric(vertical: 14),
                       ),
+                      onSubmitted: (value) => _handleSearch(context, value),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -122,6 +124,44 @@ class SearchScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleSearch(BuildContext context, String query) {
+    final cleanQuery = query.trim().toUpperCase();
+    if (cleanQuery.isEmpty) return;
+
+    // Regex pour détecter les immatriculations (France)
+    // SIV: AA-123-AA ou AA123AA
+    final sivRegex = RegExp(r'^[A-Z]{2}-?\d{3}-?[A-Z]{2}$');
+    // FNI: 1234 AB 56 ou 1234AB56
+    final fniRegex = RegExp(r'^\d{1,4}\s?[A-Z]{2,3}\s?\d{2}$');
+
+    if (sivRegex.hasMatch(cleanQuery) || fniRegex.hasMatch(cleanQuery)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'La recherche par immatriculation n\'est pas autorisée. Veuillez utiliser le VIN.',
+          ),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
+
+    // Logique de redirection selon le type de saisie
+    if (cleanQuery.length == 17) {
+      // VIN
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Recherche par VIN: $cleanQuery')));
+      // TODO: Naviguer vers les résultats VIN -> décodage véhicule -> filtrage compatibilité
+    } else {
+      // Code OEM
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Recherche par Code OEM: $cleanQuery')),
+      );
+      // TODO: Naviguer vers les résultats lookup direct
+    }
   }
 
   Widget _buildFilterChip(
