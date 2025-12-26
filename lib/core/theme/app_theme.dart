@@ -22,7 +22,7 @@ class AppTheme {
         primary: primaryColor,
         secondary: secondaryColor,
         surface: surfaceColor,
-        background: backgroundColor,
+        onSurface: backgroundColor,
         error: errorColor,
       ),
       textTheme: GoogleFonts.interTextTheme().copyWith(
