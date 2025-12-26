@@ -2,11 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth;
+  final FirebaseAnalytics _analytics;
 
-  FirebaseAuthService(this._auth);
+  FirebaseAuthService(this._auth, this._analytics);
 
   // Configuration Google Sign-In
   final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -27,10 +29,12 @@ class FirebaseAuthService {
     String email,
     String password,
   ) async {
-    return await _auth.signInWithEmailAndPassword(
+    final result = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
+    await _analytics.logLogin(loginMethod: 'email');
+    return result;
   }
 
   // Sign up with email and password
@@ -38,10 +42,12 @@ class FirebaseAuthService {
     String email,
     String password,
   ) async {
-    return await _auth.createUserWithEmailAndPassword(
+    final result = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
+    await _analytics.logSignUp(signUpMethod: 'email');
+    return result;
   }
 
   // Sign in with Google
@@ -54,7 +60,9 @@ class FirebaseAuthService {
         googleProvider.addScope('profile');
         googleProvider.setCustomParameters({'prompt': 'select_account'});
 
-        return await _auth.signInWithPopup(googleProvider);
+        final result = await _auth.signInWithPopup(googleProvider);
+        await _analytics.logLogin(loginMethod: 'google');
+        return result;
       } else {
         // Sur mobile, utilise Google Sign-In normalement
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -76,6 +84,7 @@ class FirebaseAuthService {
 
         final result = await _auth.signInWithCredential(credential);
 
+        await _analytics.logLogin(loginMethod: 'google');
         return result;
       }
     } catch (e) {
@@ -97,11 +106,14 @@ class FirebaseAuthService {
       accessToken: appleCredential.authorizationCode,
     );
 
-    return await _auth.signInWithCredential(oauthCredential);
+    final result = await _auth.signInWithCredential(oauthCredential);
+    await _analytics.logLogin(loginMethod: 'apple');
+    return result;
   }
 
   // Sign out
   Future<void> signOut() async {
     await Future.wait([_auth.signOut(), _googleSignIn.signOut()]);
+    await _analytics.logEvent(name: 'logout');
   }
 }
