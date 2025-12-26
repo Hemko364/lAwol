@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
-import 'presentation/ui/login_screen/login_screen.dart';
-import 'presentation/ui/home_screen/home_screen.dart';
+// import 'presentation/ui/login_screen/login_screen.dart';
+import 'presentation/ui/main_screen.dart';
+import 'core/theme/app_theme.dart';
 import 'core/di/injection.dart';
-import 'core/providers/auth_provider.dart';
+// import 'core/providers/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    print('Firebase initialization failed: $e');
+  }
   setupInjection();
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -21,23 +26,22 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
+    // final authState = ref.watch(authStateProvider);
 
     return MaterialApp(
-      title: 'Lawol',
+      title: 'lAwôl',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: authState.when(
-        data: (user) => user != null ? const HomeScreen() : const LoginScreen(),
+      theme: AppTheme.lightTheme,
+      home: const MainScreen(),
+      /* home: authState.when(
+        data: (user) => user != null ? const MainScreen() : const LoginScreen(),
         loading: () => const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),
         error: (error, stack) => const Scaffold(
           body: Center(child: Text('Erreur d\'authentification')),
         ),
-      ),
+      ), */
     );
   }
 }
