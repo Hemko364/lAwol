@@ -105,15 +105,15 @@ samples, guidance on mobile development, and a full API reference.
 
 ## 6) Architecture & stack (MVP)
 
-* **Frontend** : Next.js (React) déployé sur Vercel · Design system simple · SVG maps.
-* **Backend/DB** : Supabase (Postgres, Auth, Storage, Edge Functions) · API REST/SQL.
+* **Frontend** : SDK Flutter · Design system simple · SVG maps.
+* **Backend/DB** : Firebase (Firestore, Auth, Storage, Functions) · API REST/SQL.
 * **Paiement/Affiliation** : Stripe (Checkout, Webhooks) + redirections partenaires.
-* **Admin** : Retool connecté à Supabase.
-* **Option IA beta** : Supabase Storage → Edge Functions → Google Vision (OCR) → Roboflow (classification).
+* **Admin** : Retool connecté à Firebase project.
+* **Option IA beta** : Firebase Storage → Edge Functions → Google Vision (OCR) → Roboflow (classification).
 
 ### Environnements
 
-* **dev** (préprod) · **prod** (Vercel + Supabase project dédié) · variables d’env chiffrées.
+* **dev** (préprod) · **prod** (Vercel + firebase project dédié) · variables d’env chiffrées.
 
 ## 7) Modèle de données (proposition)
 
@@ -180,7 +180,7 @@ logs(id, type, payload_json, created_at)
 
 ## 13) Déploiement & CI/CD
 
-* GitHub → Vercel (front) · Supabase migrations SQL versionnées · Lint/format/test.
+* GitHub → Vercel (front) · Firebase migrations SQL versionnées · Lint/format/test.
 * Branching : `main` (prod), `develop` (préprod), PRs obligatoires.
 
 ## 14) Definition of Done (exemples)
@@ -192,7 +192,7 @@ logs(id, type, payload_json, created_at)
 
 **Notes pour le dev**
 
-* Fournir un `.env.example` (STRIPE_SECRET_KEY, SUPABASE_URL, SUPABASE_ANON_KEY, …)
+* Fournir un `.env.example` (STRIPE_SECRET_KEY, FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, ...)
 * Commencer par les schémas SVG + recherche (impact UX maximal) avant IA.
 * Back‑office Retool en parallèle (accélère l’opérationnel).
 
