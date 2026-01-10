@@ -5,6 +5,8 @@ class NormalizationLayer {
   static PartSearchQuery normalize(PartSearchQuery rawQuery) {
     return PartSearchQuery(
       partName: _normalizePartName(rawQuery.partName),
+      category: rawQuery.category,
+      manufacturer: rawQuery.manufacturer,
       oemNumber: _cleanOemNumber(rawQuery.oemNumber),
       carMake: _capitalize(rawQuery.carMake),
       carModel: _capitalize(rawQuery.carModel),
