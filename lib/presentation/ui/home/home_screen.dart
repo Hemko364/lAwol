@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
 
@@ -114,22 +113,15 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              badges.Badge(
-                badgeContent: const Text(
-                  '3',
-                  style: TextStyle(color: Colors.white),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
                 ),
-                badgeStyle: const badges.BadgeStyle(badgeColor: Colors.amber),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.shopping_cart_outlined,
-                    color: Colors.white,
-                  ),
+                child: const Icon(
+                  Icons.notifications_none_outlined,
+                  color: Colors.white,
                 ),
               ),
             ],

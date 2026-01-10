@@ -4,12 +4,10 @@ import 'package:lawol/presentation/ui/search/search_screen.dart';
 
 void main() {
   group('SearchScreen', () {
-    testWidgets('should display search bar and filter chips', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: SearchScreen(),
-        ),
-      );
+    testWidgets('should display search bar and filter chips', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(const MaterialApp(home: SearchScreen()));
 
       expect(find.text('Recherche de pièces'), findsOneWidget);
       expect(find.byType(TextField), findsOneWidget);
@@ -19,11 +17,7 @@ void main() {
     });
 
     testWidgets('should show results list', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: SearchScreen(),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: SearchScreen()));
 
       expect(find.text('3 résultats'), findsOneWidget);
       expect(find.text('Plaquettes de frein avant'), findsOneWidget);

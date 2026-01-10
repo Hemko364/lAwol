@@ -21,16 +21,11 @@ class CustomCard extends StatelessWidget {
     return Card(
       color: color,
       elevation: elevation,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(15),
-        child: Padding(
-          padding: padding!,
-          child: child,
-        ),
+        child: Padding(padding: padding!, child: child),
       ),
     );
   }

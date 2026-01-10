@@ -4,7 +4,9 @@ import 'package:lawol/presentation/widgets/custom_button.dart';
 
 void main() {
   group('CustomButton', () {
-    testWidgets('should display text and call onPressed', (WidgetTester tester) async {
+    testWidgets('should display text and call onPressed', (
+      WidgetTester tester,
+    ) async {
       bool pressed = false;
       await tester.pumpWidget(
         MaterialApp(

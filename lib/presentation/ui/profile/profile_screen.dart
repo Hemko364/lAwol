@@ -33,14 +33,6 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.person_outline,
                       'Informations personnelles',
                     ),
-                    _buildMenuItem(
-                      Icons.location_on_outlined,
-                      'Adresses de livraison',
-                    ),
-                    _buildMenuItem(
-                      Icons.credit_card_outlined,
-                      'Moyens de paiement',
-                    ),
                   ]),
                   const SizedBox(height: 24),
                   Text(
@@ -144,24 +136,6 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRoleChip(String label, bool isSelected) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: isSelected ? const Color(0xFFFF5722) : Colors.white,
-          fontWeight: FontWeight.w600,
-          fontSize: 12,
-        ),
-      ),
-    );
-  }
-
   Widget _buildStatsRow() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -179,11 +153,15 @@ class ProfileScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem('24', 'Commandes'),
+          _buildStatItem('12', 'Scans'),
           Container(height: 40, width: 1, color: Colors.grey.shade200),
-          _buildStatItem('3', 'En cours'),
+          _buildStatItem('45', 'Recherches'),
           Container(height: 40, width: 1, color: Colors.grey.shade200),
-          _buildStatItem('1.2k€', 'Économisé', color: const Color(0xFFFF5722)),
+          _buildStatItem(
+            '150€',
+            'Économie estimée',
+            color: const Color(0xFFFF5722),
+          ),
         ],
       ),
     );

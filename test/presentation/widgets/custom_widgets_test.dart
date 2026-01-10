@@ -8,9 +8,7 @@ void main() {
     testWidgets('should display title', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            appBar: CustomAppBar(title: 'Test Title'),
-          ),
+          home: Scaffold(appBar: CustomAppBar(title: 'Test Title')),
         ),
       );
 
@@ -19,10 +17,12 @@ void main() {
   });
 
   group('CustomSearchBar', () {
-    testWidgets('should update controller and call onChanged', (WidgetTester tester) async {
+    testWidgets('should update controller and call onChanged', (
+      WidgetTester tester,
+    ) async {
       final controller = TextEditingController();
       String changedValue = '';
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -36,7 +36,7 @@ void main() {
       );
 
       expect(find.text('Search here'), findsOneWidget);
-      
+
       await tester.enterText(find.byType(TextField), 'Hello');
       expect(controller.text, 'Hello');
       expect(changedValue, 'Hello');

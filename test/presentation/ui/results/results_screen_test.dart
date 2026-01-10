@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawol/domain/models/part_search_query.dart';
+import 'package:lawol/domain/models/part_variant.dart';
 import 'package:lawol/presentation/ui/results/results_screen.dart';
+import 'package:lawol/core/providers/providers.dart';
+import 'package:lawol/data/services/price_service.dart';
 
 void main() {
   group('ResultsScreen', () {
@@ -16,36 +20,68 @@ void main() {
       confidence: 0.95,
     );
 
-    testWidgets('should display all query information', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ResultsScreen(searchQuery: mockQuery),
-        ),
-      );
+    final mockVariant = PartVariant(
+      mpn: 'BP1234',
+      cpnId: 'CPN001',
+      brand: 'Brembo',
+      supplier: 'AutoParts',
+      oemReference: '123456',
+      interchangeType: 'exact',
+      confidenceScore: 0.99,
+    );
 
-      expect(find.text('Alternateur'), findsOneWidget);
-      expect(find.text('Moteur'), findsOneWidget);
-      expect(find.text('Bosch'), findsOneWidget);
-      expect(find.text('123456'), findsOneWidget);
-      expect(find.text('Toyota'), findsOneWidget);
-      expect(find.text('Yaris'), findsOneWidget);
-      expect(find.text('95.0% de confiance'), findsOneWidget);
-    });
+    final mockPrice = PriceInfo(
+      amount: 45.90,
+      currency: '€',
+      partnerName: 'Oscaro',
+    );
 
-    testWidgets('should display orange color for low confidence', (WidgetTester tester) async {
+    testWidgets(
+      'should display all query information and variants with price',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              oemSearchProvider('123456').overrideWith((ref) => [mockVariant]),
+              bestPriceProvider('BP1234').overrideWith((ref) => mockPrice),
+            ],
+            child: MaterialApp(home: ResultsScreen(searchQuery: mockQuery)),
+          ),
+        );
+
+        await tester.pump(); // Déclencher le chargement du FutureProvider
+
+        expect(find.text('Alternateur'), findsOneWidget);
+        expect(find.text('MOTEUR'), findsOneWidget);
+        expect(find.text('Bosch'), findsOneWidget);
+        expect(find.text('123456'), findsOneWidget);
+        expect(find.text('Confiance : 95%'), findsOneWidget);
+
+        // Vérifier la variante
+        expect(find.text('1 Équivalents trouvés'), findsOneWidget);
+        expect(find.text('Brembo'), findsOneWidget);
+        expect(find.text('AutoParts • BP1234'), findsOneWidget);
+
+        // Vérifier le prix
+        expect(find.text('45.90 €'), findsOneWidget);
+      },
+    );
+
+    testWidgets('should display low confidence', (WidgetTester tester) async {
       final lowConfidenceQuery = PartSearchQuery(
         partName: 'Test',
         confidence: 0.5,
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: ResultsScreen(searchQuery: lowConfidenceQuery),
+        ProviderScope(
+          child: MaterialApp(
+            home: ResultsScreen(searchQuery: lowConfidenceQuery),
+          ),
         ),
       );
 
-      final text = tester.widget<Text>(find.text('50.0% de confiance'));
-      expect(text.style?.color, Colors.orange);
+      expect(find.text('Confiance : 50%'), findsOneWidget);
     });
   });
 }

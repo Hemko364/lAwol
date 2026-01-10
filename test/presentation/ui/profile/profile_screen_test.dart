@@ -30,8 +30,6 @@ void main() {
 
       expect(find.text('Compte'), findsOneWidget);
       expect(find.text('Informations personnelles'), findsOneWidget);
-      expect(find.text('Adresses de livraison'), findsOneWidget);
-      expect(find.text('Moyens de paiement'), findsOneWidget);
       expect(find.text('Notifications'), findsOneWidget);
       expect(find.text('Paramètres'), findsOneWidget);
       expect(find.text('Déconnexion'), findsOneWidget);

@@ -19,40 +19,40 @@ class GeminiService {
 
   Future<PartSearchQuery> analyzeImage(Uint8List imageBytes) async {
     final prompt = Content.text('''
-      Analyse cette image de pièce automobile. Identifie-la avec précision pour un catalogue technique.
+      Analyse cette image de pièce automobile. Identifie-la avec précision selon le concept de Pièce Canonique (CPN).
+      
+      Instructions de classification :
+      - part_name : Doit être le nom technique standardisé (ex: Alternateur, Disque de frein, Projecteur principal).
+      - category : Catégorie fonctionnelle (ex: Moteur, Freinage, Éclairage, Suspension).
+      - manufacturer : Marque visible sur la pièce (ex: Bosch, Valeo, Continental) ou null.
+      - oem_number : Référence constructeur (OEM) ou référence fabricant (MPN) visible.
+      
       Retourne UNIQUEMENT un JSON valide avec cette structure exacte :
       {
-        "part_name": "Nom technique standard (CPN) (ex: Alternateur, Disque de frein)",
-        "category": "Catégorie fonctionnelle (ex: Moteur, Freinage, Suspension)",
-        "manufacturer": "Fabricant visible sur la pièce (ex: Bosch, Valeo) ou null",
-        "oem_number": "Numéro de référence visible ou null",
-        "car_make": "Marque de véhicule compatible ou null",
-        "car_model": "Modèle de véhicule compatible ou null",
-        "year": Année approximative (int) ou null,
-        "confidence": Score de confiance entre 0.0 et 1.0
+        "part_name": "Nom technique CPN",
+        "category": "Catégorie",
+        "manufacturer": "Fabricant ou null",
+        "oem_number": "Référence ou null",
+        "car_make": "Marque véhicule compatible ou null",
+        "car_model": "Modèle véhicule compatible ou null",
+        "year": null,
+        "confidence": score entre 0.0 et 1.0
       }
       ''');
 
     final imagePart = Content.inlineData('image/jpeg', imageBytes);
 
     try {
-      print(
-        'Envoi de la requête à Gemini avec une image de ${imageBytes.lengthInBytes} bytes',
-      );
       final response = await _model.generateContent([prompt, imagePart]);
       final jsonText = response.text;
-      print('Réponse brute Gemini: $jsonText');
 
       if (jsonText == null) {
         throw Exception('Réponse vide de Gemini');
       }
 
       final Map<String, dynamic> jsonMap = json.decode(jsonText);
-      print('JSON décodé: $jsonMap');
       return PartSearchQuery.fromJson(jsonMap);
-    } catch (e, stackTrace) {
-      print('Erreur détaillée Gemini: $e');
-      print('Stack trace: $stackTrace');
+    } catch (e) {
       throw Exception('Erreur lors de l\'analyse Gemini: $e');
     }
   }
