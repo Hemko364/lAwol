@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../data/firebase/auth_service.dart';
-import '../../../core/di/injection.dart';
+import 'package:lawol/data/firebase/auth_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lawol/core/providers/providers.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  late final FirebaseAuthService _authService;
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _authService = getIt<FirebaseAuthService>();
-  }
 
   @override
   void dispose() {
@@ -30,22 +24,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signIn() async {
+    final authService = ref.read(authServiceProvider);
     setState(() => _isLoading = true);
     try {
-      await _authService.signInWithEmailAndPassword(
+      await authService.signInWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text,
       );
       if (!mounted) return;
       // Navigate to home or show success
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Signed in successfully')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Signed in successfully')));
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? 'Sign in failed')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message ?? 'Sign in failed')));
     } finally {
       if (!mounted) return;
       setState(() => _isLoading = false);
@@ -53,9 +48,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signUp() async {
+    final authService = ref.read(authServiceProvider);
     setState(() => _isLoading = true);
     try {
-      await _authService.createUserWithEmailAndPassword(
+      await authService.createUserWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text,
       );
@@ -65,9 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? 'Sign up failed')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message ?? 'Sign up failed')));
     } finally {
       if (!mounted) return;
       setState(() => _isLoading = false);
@@ -75,9 +71,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signInWithGoogle() async {
+    final authService = ref.read(authServiceProvider);
     setState(() => _isLoading = true);
     try {
-      await _authService.signInWithGoogle();
+      await authService.signInWithGoogle();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Signed in with Google successfully')),
@@ -89,9 +86,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Google sign in failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Google sign in failed: $e')));
     } finally {
       if (!mounted) return;
       setState(() => _isLoading = false);
@@ -99,9 +96,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signInWithApple() async {
+    final authService = ref.read(authServiceProvider);
     setState(() => _isLoading = true);
     try {
-      await _authService.signInWithApple();
+      await authService.signInWithApple();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Signed in with Apple successfully')),

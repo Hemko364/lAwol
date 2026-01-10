@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../data/services/gemini_service.dart';
-import '../../../domain/models/normalization_layer.dart';
+import 'package:lawol/data/services/gemini_service.dart';
+import 'package:lawol/domain/models/normalization_layer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lawol/core/providers/providers.dart';
 import '../results/results_screen.dart';
 
-class ScannerScreen extends StatefulWidget {
+class ScannerScreen extends ConsumerStatefulWidget {
   const ScannerScreen({super.key});
 
   @override
-  State<ScannerScreen> createState() => _ScannerScreenState();
+  ConsumerState<ScannerScreen> createState() => _ScannerScreenState();
 }
 
-class _ScannerScreenState extends State<ScannerScreen> {
-  final _geminiService = GeminiService();
+class _ScannerScreenState extends ConsumerState<ScannerScreen> {
   bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    final geminiService = ref.watch(geminiServiceProvider);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -207,11 +209,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
   }
 
   Future<void> _processImage(BuildContext context, XFile image) async {
+    final geminiService = ref.read(geminiServiceProvider);
     setState(() => _isLoading = true);
 
     try {
       final bytes = await image.readAsBytes();
-      final rawResult = await _geminiService.analyzeImage(bytes);
+      final rawResult = await geminiService.analyzeImage(bytes);
       final normalizedResult = NormalizationLayer.normalize(rawResult);
 
       if (!mounted) return;

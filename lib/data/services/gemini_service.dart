@@ -6,15 +6,16 @@ import '../../domain/models/part_search_query.dart';
 class GeminiService {
   final GenerativeModel _model;
 
-  GeminiService()
-    : _model = FirebaseAI.googleAI().generativeModel(
-        model:
-            'gemini-3-flash-preview', 
-        generationConfig: GenerationConfig(
-          responseMimeType: 'application/json',
-          temperature: 0.2,
-        ),
-      );
+  GeminiService({GenerativeModel? model})
+    : _model =
+          model ??
+          FirebaseAI.googleAI().generativeModel(
+            model: 'gemini-3-flash-preview',
+            generationConfig: GenerationConfig(
+              responseMimeType: 'application/json',
+              temperature: 0.2,
+            ),
+          );
 
   Future<PartSearchQuery> analyzeImage(Uint8List imageBytes) async {
     final prompt = Content.text('''
