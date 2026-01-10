@@ -5,6 +5,7 @@ import 'package:lawol/domain/models/part_search_query.dart';
 import 'package:lawol/domain/models/part_variant.dart';
 import 'package:lawol/presentation/ui/results/results_screen.dart';
 import 'package:lawol/core/providers/providers.dart';
+import 'package:lawol/data/services/price_service.dart';
 
 void main() {
   group('ResultsScreen', () {
@@ -29,31 +30,42 @@ void main() {
       confidenceScore: 0.99,
     );
 
-    testWidgets('should display all query information and variants', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            oemSearchProvider('123456').overrideWith((ref) => [mockVariant]),
-          ],
-          child: MaterialApp(home: ResultsScreen(searchQuery: mockQuery)),
-        ),
-      );
+    final mockPrice = PriceInfo(
+      amount: 45.90,
+      currency: '€',
+      partnerName: 'Oscaro',
+    );
 
-      await tester.pump(); // Déclencher le chargement du FutureProvider
+    testWidgets(
+      'should display all query information and variants with price',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              oemSearchProvider('123456').overrideWith((ref) => [mockVariant]),
+              bestPriceProvider('BP1234').overrideWith((ref) => mockPrice),
+            ],
+            child: MaterialApp(home: ResultsScreen(searchQuery: mockQuery)),
+          ),
+        );
 
-      expect(find.text('Alternateur'), findsOneWidget);
-      expect(find.text('MOTEUR'), findsOneWidget);
-      expect(find.text('Bosch'), findsOneWidget);
-      expect(find.text('123456'), findsOneWidget);
-      expect(find.text('Confiance : 95%'), findsOneWidget);
+        await tester.pump(); // Déclencher le chargement du FutureProvider
 
-      // Vérifier la variante
-      expect(find.text('1 Équivalents trouvés'), findsOneWidget);
-      expect(find.text('Brembo'), findsOneWidget);
-      expect(find.text('AutoParts • BP1234'), findsOneWidget);
-    });
+        expect(find.text('Alternateur'), findsOneWidget);
+        expect(find.text('MOTEUR'), findsOneWidget);
+        expect(find.text('Bosch'), findsOneWidget);
+        expect(find.text('123456'), findsOneWidget);
+        expect(find.text('Confiance : 95%'), findsOneWidget);
+
+        // Vérifier la variante
+        expect(find.text('1 Équivalents trouvés'), findsOneWidget);
+        expect(find.text('Brembo'), findsOneWidget);
+        expect(find.text('AutoParts • BP1234'), findsOneWidget);
+
+        // Vérifier le prix
+        expect(find.text('45.90 €'), findsOneWidget);
+      },
+    );
 
     testWidgets('should display low confidence', (WidgetTester tester) async {
       final lowConfidenceQuery = PartSearchQuery(

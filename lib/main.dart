@@ -7,6 +7,9 @@ import 'presentation/ui/main_screen.dart';
 import 'core/theme/app_theme.dart';
 import 'package:lawol/core/providers/providers.dart';
 import 'presentation/ui/login_screen/login_screen.dart';
+import 'data/firebase/firestore_seeder.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +17,13 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    // Initialisation des données de test en mode debug si nécessaire
+    if (kDebugMode) {
+      final seeder = FirestoreSeeder(FirebaseFirestore.instance);
+      await seeder
+          .seedTestData(); // À décommenter une seule fois pour peupler la DB
+    }
   } catch (e) {
     // Firebase initialization failed
   }

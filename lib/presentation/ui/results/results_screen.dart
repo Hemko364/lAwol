@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../domain/models/part_search_query.dart';
 import '../../../core/providers/providers.dart';
 import '../../../domain/models/part_variant.dart';
+import '../../../data/services/price_service.dart';
 
 class ResultsScreen extends ConsumerWidget {
   final PartSearchQuery searchQuery;
@@ -34,7 +35,7 @@ class ResultsScreen extends ConsumerWidget {
             _buildTechnicalDetails(context),
             const SizedBox(height: 24),
             oemResults.when(
-              data: (variants) => _buildVariantsSection(context, variants),
+              data: (variants) => _buildVariantsSection(context, ref, variants),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (err, stack) => Center(child: Text('Erreur : $err')),
             ),
@@ -46,6 +47,7 @@ class ResultsScreen extends ConsumerWidget {
 
   Widget _buildVariantsSection(
     BuildContext context,
+    WidgetRef ref,
     List<PartVariant> variants,
   ) {
     if (variants.isEmpty) {
@@ -85,14 +87,23 @@ class ResultsScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 12),
-        ...variants.map(
-          (v) => _buildEquivalentCard(
+        ...variants.map((v) {
+          final bestPriceAsync = ref.watch(bestPriceProvider(v.mpn));
+          final priceText = bestPriceAsync.when(
+            data: (price) => price != null
+                ? '${price.amount.toStringAsFixed(2)} ${price.currency}'
+                : '-- €',
+            loading: () => '...',
+            error: (_, __) => '-- €',
+          );
+
+          return _buildEquivalentCard(
             v.brand,
             '${v.supplier} • ${v.mpn}',
-            'À partir de -- €', // Le prix viendra d'un futur service de prix
+            priceText,
             'Référence OEM : ${v.oemReference ?? "N/A"}',
-          ),
-        ),
+          );
+        }),
       ],
     );
   }
