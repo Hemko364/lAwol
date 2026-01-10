@@ -6,27 +6,28 @@ import '../../domain/models/part_search_query.dart';
 class GeminiService {
   final GenerativeModel _model;
 
-  GeminiService()
-    // Utilisation de Google AI (Gemini Developer API) pour l'accès gratuit (sans facturation Vertex AI)
-    // Le modèle 'gemini-3-flash-preview' est stable et gratuit pour le développement
-    : _model = FirebaseAI.googleAI().generativeModel(
-        model:
-            'gemini-3-flash-preview', // Modèle standard stable et gratuit pour le développement
-        generationConfig: GenerationConfig(
-          responseMimeType: 'application/json',
-          temperature: 0.2,
-        ),
-      );
+  GeminiService({GenerativeModel? model})
+    : _model =
+          model ??
+          FirebaseAI.googleAI().generativeModel(
+            model: 'gemini-3-flash-preview',
+            generationConfig: GenerationConfig(
+              responseMimeType: 'application/json',
+              temperature: 0.2,
+            ),
+          );
 
   Future<PartSearchQuery> analyzeImage(Uint8List imageBytes) async {
     final prompt = Content.text('''
-      Analyse cette image de pièce automobile. Identifie-la avec précision.
+      Analyse cette image de pièce automobile. Identifie-la avec précision pour un catalogue technique.
       Retourne UNIQUEMENT un JSON valide avec cette structure exacte :
       {
-        "part_name": "Nom standard de la pièce (ex: Alternateur)",
-        "oem_number": "Numéro de série visible ou null",
-        "car_make": "Marque de voiture compatible ou null",
-        "car_model": "Modèle de voiture compatible ou null",
+        "part_name": "Nom technique standard (CPN) (ex: Alternateur, Disque de frein)",
+        "category": "Catégorie fonctionnelle (ex: Moteur, Freinage, Suspension)",
+        "manufacturer": "Fabricant visible sur la pièce (ex: Bosch, Valeo) ou null",
+        "oem_number": "Numéro de référence visible ou null",
+        "car_make": "Marque de véhicule compatible ou null",
+        "car_model": "Modèle de véhicule compatible ou null",
         "year": Année approximative (int) ou null,
         "confidence": Score de confiance entre 0.0 et 1.0
       }

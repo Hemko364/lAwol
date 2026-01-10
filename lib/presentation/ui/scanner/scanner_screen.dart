@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../data/services/gemini_service.dart';
-import '../../../domain/models/normalization_layer.dart';
+import 'package:lawol/data/services/gemini_service.dart';
+import 'package:lawol/domain/models/normalization_layer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lawol/core/providers/providers.dart';
+import '../results/results_screen.dart';
 
-class ScannerScreen extends StatefulWidget {
+class ScannerScreen extends ConsumerStatefulWidget {
   const ScannerScreen({super.key});
 
   @override
-  State<ScannerScreen> createState() => _ScannerScreenState();
+  ConsumerState<ScannerScreen> createState() => _ScannerScreenState();
 }
 
-class _ScannerScreenState extends State<ScannerScreen> {
-  final _geminiService = GeminiService();
+class _ScannerScreenState extends ConsumerState<ScannerScreen> {
   bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    final geminiService = ref.watch(geminiServiceProvider);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -206,60 +209,23 @@ class _ScannerScreenState extends State<ScannerScreen> {
   }
 
   Future<void> _processImage(BuildContext context, XFile image) async {
+    final geminiService = ref.read(geminiServiceProvider);
     setState(() => _isLoading = true);
 
     try {
       final bytes = await image.readAsBytes();
-      final rawResult = await _geminiService.analyzeImage(bytes);
+      final rawResult = await geminiService.analyzeImage(bytes);
       final normalizedResult = NormalizationLayer.normalize(rawResult);
 
       if (!mounted) return;
 
-      // Affichage du résultat (simulation de la navigation vers la recherche)
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (ctx) => Container(
-          padding: const EdgeInsets.all(24),
-          height: MediaQuery.of(context).size.height * 0.6,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Pièce Identifiée", style: Theme.of(context).textTheme.headlineSmall),
-              const SizedBox(height: 16),
-              ListTile(
-                leading: const Icon(Icons.check_circle, color: Colors.green),
-                title: Text(normalizedResult.partName),
-                subtitle: Text("Confiance: ${(normalizedResult.confidence * 100).toStringAsFixed(1)}%"),
-              ),
-              if (normalizedResult.oemNumber != null)
-                ListTile(
-                  leading: const Icon(Icons.qr_code),
-                  title: Text("OEM: ${normalizedResult.oemNumber}"),
-                ),
-              if (normalizedResult.carMake != null)
-                ListTile(
-                  leading: const Icon(Icons.directions_car),
-                  title: Text("Compatible: ${normalizedResult.carMake} ${normalizedResult.carModel ?? ''}"),
-                ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Recherche fournisseurs lancée... (Mock)")),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                child: const Text("Rechercher cette pièce"),
-              )
-            ],
-          ),
+      // Navigation vers l'écran de résultats
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultsScreen(searchQuery: normalizedResult),
         ),
       );
-
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

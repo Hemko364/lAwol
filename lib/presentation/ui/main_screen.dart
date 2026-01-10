@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'home/home_screen.dart';
 import 'search/search_screen.dart';
 import 'scanner/scanner_screen.dart';
-import 'orders/orders_screen.dart';
 import 'profile/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,7 +18,6 @@ class _MainScreenState extends State<MainScreen> {
     HomeScreen(),
     SearchScreen(),
     ScannerScreen(),
-    OrdersScreen(),
     ProfileScreen(),
   ];
 
@@ -77,11 +75,6 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
               label: '', // Empty label for the center button
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.inventory_2_outlined),
-              activeIcon: Icon(Icons.inventory_2),
-              label: 'Commandes',
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
