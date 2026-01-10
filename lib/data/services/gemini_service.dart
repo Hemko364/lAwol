@@ -8,9 +8,10 @@ class GeminiService {
 
   GeminiService()
     // Utilisation de Google AI (Gemini Developer API) pour l'accès gratuit (sans facturation Vertex AI)
+    // Le modèle 'gemini-3-flash-preview' est stable et gratuit pour le développement
     : _model = FirebaseAI.googleAI().generativeModel(
         model:
-            'gemini-1.5-pro', // Modèle standard stable et gratuit pour le développement
+            'gemini-3-flash-preview', // Modèle standard stable et gratuit pour le développement
         generationConfig: GenerationConfig(
           responseMimeType: 'application/json',
           temperature: 0.2,
