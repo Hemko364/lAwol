@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lawol/data/services/gemini_service.dart';
 import 'package:lawol/domain/models/normalization_layer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawol/core/providers/providers.dart';
@@ -18,7 +17,6 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final geminiService = ref.watch(geminiServiceProvider);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -217,7 +215,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
       final rawResult = await geminiService.analyzeImage(bytes);
       final normalizedResult = NormalizationLayer.normalize(rawResult);
 
-      if (!mounted) return;
+      if (!context.mounted) return;
 
       // Navigation vers l'écran de résultats
       Navigator.push(
@@ -227,7 +225,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
         ),
       );
     } catch (e) {
-      if (!mounted) return;
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erreur IA : $e'), backgroundColor: Colors.red),
       );

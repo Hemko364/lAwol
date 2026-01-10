@@ -22,10 +22,7 @@ void main() {
     });
 
     test('normalize should handle null values correctly', () {
-      final raw = PartSearchQuery(
-        partName: 'Batterie',
-        confidence: 0.5,
-      );
+      final raw = PartSearchQuery(partName: 'Batterie', confidence: 0.5);
 
       final result = NormalizationLayer.normalize(raw);
 
