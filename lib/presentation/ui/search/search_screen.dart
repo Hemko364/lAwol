@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import '../results/results_screen.dart';
 import '../../../domain/models/part_search_query.dart';
+import '../../../data/services/vin_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends ConsumerWidget {
   const SearchScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -35,7 +37,8 @@ class SearchScreen extends StatelessWidget {
                         icon: Icon(Icons.search, color: Colors.grey),
                         contentPadding: EdgeInsets.symmetric(vertical: 14),
                       ),
-                      onSubmitted: (value) => _handleSearch(context, value),
+                      onSubmitted: (value) =>
+                          _handleSearch(context, ref, value),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -128,7 +131,7 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  void _handleSearch(BuildContext context, String query) {
+  void _handleSearch(BuildContext context, WidgetRef ref, String query) async {
     final cleanQuery = query.trim().toUpperCase();
     if (cleanQuery.isEmpty) return;
 
@@ -152,19 +155,40 @@ class SearchScreen extends StatelessWidget {
 
     // Logique de redirection selon le type de saisie
     if (cleanQuery.length == 17) {
-      // VIN
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultsScreen(
-            searchQuery: PartSearchQuery(
-              partName: 'Recherche par VIN',
-              oemNumber: cleanQuery, // En attendant le décodage VIN
-              confidence: 1.0,
-            ),
-          ),
-        ),
+      // Afficher un indicateur de chargement
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
       );
+
+      try {
+        final vehicle = await ref.read(vinDecoderProvider(cleanQuery).future);
+        if (context.mounted) {
+          Navigator.pop(context); // Fermer le loader
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ResultsScreen(
+                searchQuery: PartSearchQuery(
+                  partName: 'Recherche par VIN',
+                  oemNumber: cleanQuery,
+                  confidence: 1.0,
+                  manufacturer:
+                      '${vehicle.make} ${vehicle.model} (${vehicle.year})',
+                ),
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Erreur décodage VIN: $e')));
+        }
+      }
     } else {
       // Code OEM
       Navigator.push(

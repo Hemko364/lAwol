@@ -32,7 +32,7 @@ class ResultsScreen extends ConsumerWidget {
           children: [
             _buildIdentificationHeader(context),
             const SizedBox(height: 24),
-            _buildTechnicalDetails(context),
+            _buildTechnicalDetails(context, ref),
             const SizedBox(height: 24),
             oemResults.when(
               data: (variants) => _buildVariantsSection(context, ref, variants),
@@ -102,6 +102,7 @@ class ResultsScreen extends ConsumerWidget {
             '${v.supplier} • ${v.mpn}',
             priceText,
             'Référence OEM : ${v.oemReference ?? "N/A"}',
+            brand: v.brand,
           );
         }),
       ],
@@ -182,7 +183,13 @@ class ResultsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTechnicalDetails(BuildContext context) {
+  Widget _buildTechnicalDetails(BuildContext context, WidgetRef ref) {
+    // Si on a des variantes, on peut essayer de récupérer le CPN (Canonical Part)
+    // pour afficher des détails plus riches (Schémas, etc.)
+    final oemResults = searchQuery.oemNumber != null
+        ? ref.watch(oemSearchProvider(searchQuery.oemNumber!))
+        : const AsyncValue<List<PartVariant>>.data([]);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -220,6 +227,215 @@ class ResultsScreen extends ConsumerWidget {
             ],
           ),
         ),
+        const SizedBox(height: 24),
+        oemResults.when(
+          data: (variants) {
+            if (variants.isEmpty) return const SizedBox.shrink();
+            final cpnId = variants.first.cpnId;
+            final canonicalPartAsync = ref.watch(canonicalPartProvider(cpnId));
+
+            return canonicalPartAsync.when(
+              data: (part) => part != null
+                  ? _buildCPNDetails(context, part)
+                  : const SizedBox.shrink(),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (_, __) => const SizedBox.shrink(),
+            );
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+        const SizedBox(height: 24),
+        oemResults.when(
+          data: (variants) {
+            if (variants.isEmpty) return const SizedBox.shrink();
+            final cpnId = variants.first.cpnId;
+            final fitmentAsync = ref.watch(fitmentProvider(cpnId));
+
+            return fitmentAsync.when(
+              data: (fitments) => fitments.isNotEmpty
+                  ? _buildFitmentSection(context, fitments)
+                  : const SizedBox.shrink(),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (_, __) => const SizedBox.shrink(),
+            );
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFitmentSection(BuildContext context, List<dynamic> fitments) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text(
+              'Compatibilité Véhicules',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.green.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.green.shade100),
+              ),
+              child: Text(
+                '${fitments.length} modèles',
+                style: TextStyle(
+                  color: Colors.green.shade700,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: fitments.length,
+            separatorBuilder: (context, index) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final f = fitments[index];
+              return ListTile(
+                leading: _buildBrandLogo(f.make),
+                title: Text(
+                  f.vehicleTrimId,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                subtitle: Text(
+                  f.make,
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                ),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    if (f.yearFrom != null)
+                      Text(
+                        '${f.yearFrom}${f.yearTo != null ? " - ${f.yearTo}" : "+"}',
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                        ),
+                      ),
+                    const Icon(Icons.verified, color: Colors.green, size: 14),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBrandLogo(String make) {
+    Color brandColor = Colors.grey.shade400;
+    String initial = make.isNotEmpty ? make[0].toUpperCase() : '?';
+
+    switch (make.toUpperCase()) {
+      case 'VW':
+      case 'VOLKSWAGEN':
+        brandColor = const Color(0xFF001E50); // VW Blue
+        break;
+      case 'AUDI':
+        brandColor = Colors.black;
+        break;
+      case 'TOYOTA':
+        brandColor = const Color(0xFFEB0A1E); // Toyota Red
+        break;
+      case 'PEUGEOT':
+        brandColor = const Color(0xFF002244); // Peugeot Blue
+        break;
+      case 'RENAULT':
+        brandColor = const Color(0xFFFFCC33); // Renault Yellow
+        break;
+      case 'BMW':
+        brandColor = const Color(0xFF0066B3); // BMW Blue
+        break;
+      case 'MERCEDES':
+        brandColor = Colors.grey.shade800;
+        break;
+      case 'BOSCH':
+        brandColor = const Color(0xFFE30613); // Bosch Red
+        break;
+      case 'BREMBO':
+        brandColor = const Color(0xFFE21017); // Brembo Red
+        break;
+      case 'MANN-FILTER':
+        brandColor = const Color(0xFF009640); // Mann Green
+        break;
+      case 'VALEO':
+        brandColor = const Color(0xFF00A19B); // Valeo Green
+        break;
+    }
+
+    return CircleAvatar(
+      radius: 18,
+      backgroundColor: brandColor.withValues(alpha: 0.1),
+      child: Text(
+        initial,
+        style: TextStyle(
+          color: brandColor,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCPNDetails(BuildContext context, dynamic part) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Schéma Technique',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          height: 200,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.architecture, size: 48, color: Colors.grey.shade400),
+              const SizedBox(height: 12),
+              Text(
+                'Schéma pour : ${part.label}',
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Famille : ${part.family}',
+                style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -238,10 +454,11 @@ class ResultsScreen extends ConsumerWidget {
 
   Widget _buildEquivalentCard(
     String name,
-    String brand,
+    String brandName,
     String price,
-    String info,
-  ) {
+    String info, {
+    String? brand,
+  }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -252,14 +469,7 @@ class ResultsScreen extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(Icons.settings_suggest, color: Colors.blue),
-          ),
+          _buildBrandLogo(brand ?? ''),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -267,7 +477,7 @@ class ResultsScreen extends ConsumerWidget {
               children: [
                 Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
                 Text(
-                  brand,
+                  brandName,
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                 ),
                 const SizedBox(height: 4),

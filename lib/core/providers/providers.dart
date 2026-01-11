@@ -9,6 +9,7 @@ import 'package:lawol/data/repositories/parts_repository.dart';
 import 'package:lawol/domain/models/canonical_part.dart';
 import 'package:lawol/domain/models/part_variant.dart';
 import 'package:lawol/domain/models/interchange.dart';
+import 'package:lawol/domain/models/fitment.dart';
 
 // Firebase Providers
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
@@ -56,6 +57,14 @@ final interchangesProvider = FutureProvider.family<List<Interchange>, String>((
   cpnId,
 ) {
   return ref.watch(partsRepositoryProvider).getInterchanges(cpnId);
+});
+
+/// Provider pour récupérer les affectations d'une pièce canonique
+final fitmentProvider = FutureProvider.family<List<Fitment>, String>((
+  ref,
+  cpnId,
+) {
+  return ref.watch(partsRepositoryProvider).getFitmentForCPN(cpnId);
 });
 
 /// Provider pour rechercher des variantes par référence OEM

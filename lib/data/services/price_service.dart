@@ -18,7 +18,9 @@ class PriceService {
   // Pour la V1, on simule une agrégation de prix.
   // Plus tard, cela pourra appeler des APIs partenaires ou une Cloud Function.
   Future<List<PriceInfo>> getPricesForVariant(String mpn) async {
-    await Future.delayed(const Duration(milliseconds: 500)); // Simulation réseau
+    await Future.delayed(
+      const Duration(milliseconds: 500),
+    ); // Simulation réseau
 
     // Simulation de données basées sur le MPN
     if (mpn == 'BP1234') {
@@ -55,12 +57,13 @@ class PriceService {
 
 final priceServiceProvider = Provider((ref) => PriceService());
 
-final variantPricesProvider =
-    FutureProvider.family<List<PriceInfo>, String>((ref, mpn) {
+final variantPricesProvider = FutureProvider.family<List<PriceInfo>, String>((
+  ref,
+  mpn,
+) {
   return ref.watch(priceServiceProvider).getPricesForVariant(mpn);
 });
 
-final bestPriceProvider =
-    FutureProvider.family<PriceInfo?, String>((ref, mpn) {
+final bestPriceProvider = FutureProvider.family<PriceInfo?, String>((ref, mpn) {
   return ref.watch(priceServiceProvider).getBestPrice(mpn);
 });
