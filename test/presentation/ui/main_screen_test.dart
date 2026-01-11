@@ -110,6 +110,25 @@ void main() {
       expect(bottomNavBar.currentIndex, 2);
     });
 
+    testWidgets('should navigate to GarageScreen when tapped', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(createMainScreen());
+
+      final garageTab = find.descendant(
+        of: find.byType(BottomNavigationBar),
+        matching: find.byIcon(Icons.directions_car_outlined),
+      );
+
+      await tester.tap(garageTab);
+      await tester.pump();
+
+      final bottomNavBar = tester.widget<BottomNavigationBar>(
+        find.byType(BottomNavigationBar),
+      );
+      expect(bottomNavBar.currentIndex, 3);
+    });
+
     testWidgets('should navigate to ProfileScreen when tapped', (
       WidgetTester tester,
     ) async {
@@ -126,7 +145,7 @@ void main() {
       final bottomNavBar = tester.widget<BottomNavigationBar>(
         find.byType(BottomNavigationBar),
       );
-      expect(bottomNavBar.currentIndex, 3);
+      expect(bottomNavBar.currentIndex, 4);
     });
   });
 }

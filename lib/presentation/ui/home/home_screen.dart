@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
+import '../categories/categories_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -27,7 +28,7 @@ class HomeScreen extends ConsumerWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  _buildQuickActions(context),
+                  _buildQuickActions(context, ref),
                   const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,47 +154,76 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
+  Widget _buildQuickActions(BuildContext context, WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildActionItem(context, Icons.search, 'Recherche\nrapide'),
-        _buildActionItem(context, Icons.camera_alt, 'Scanner\npièce'),
-        _buildActionItem(context, Icons.settings, 'Par\ncatégorie'),
-        _buildActionItem(context, Icons.directions_car, 'Mon\nvéhicule'),
+        _buildActionItem(
+          context,
+          Icons.search,
+          'Recherche\nrapide',
+          () => ref.read(navigationProvider.notifier).state = 1,
+        ),
+        _buildActionItem(
+          context,
+          Icons.camera_alt,
+          'Scanner\npièce',
+          () => ref.read(navigationProvider.notifier).state = 2,
+        ),
+        _buildActionItem(context, Icons.settings, 'Par\ncatégorie', () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CategoriesScreen()),
+          );
+        }),
+        _buildActionItem(
+          context,
+          Icons.directions_car,
+          'Mon\nvéhicule',
+          () => ref.read(navigationProvider.notifier).state = 3,
+        ),
       ],
     );
   }
 
-  Widget _buildActionItem(BuildContext context, IconData icon, String label) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+  Widget _buildActionItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Icon(
+              icon,
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.8),
+              size: 28,
+            ),
           ),
-          child: Icon(
-            icon,
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.8),
-            size: 28,
+          const SizedBox(height: 8),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

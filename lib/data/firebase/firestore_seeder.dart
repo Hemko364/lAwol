@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lawol/domain/models/canonical_part.dart';
 import 'package:lawol/domain/models/part_variant.dart';
 import 'package:lawol/domain/models/partner_product.dart';
+import 'package:lawol/domain/models/fitment.dart';
 
 class FirestoreSeeder {
   final FirebaseFirestore _firestore;
@@ -103,6 +104,43 @@ class FirestoreSeeder {
           .collection('partner_products')
           .doc('${product.partnerId}_${product.mpn}')
           .set(product.toJson());
+    }
+
+    // 4. Seed Fitment
+    final fitments = [
+      Fitment(
+        id: 'FIT_001',
+        cpnId: 'CPN_BRAKE_PADS_VW_001',
+        make: 'VW',
+        vehicleTrimId: 'Golf VI 2.0 TDI',
+        yearFrom: 2008,
+        yearTo: 2013,
+        confidenceScore: 1.0,
+      ),
+      Fitment(
+        id: 'FIT_002',
+        cpnId: 'CPN_BRAKE_PADS_VW_001',
+        make: 'Audi',
+        vehicleTrimId: 'A3 (8P) 2.0 TDI',
+        yearFrom: 2003,
+        yearTo: 2012,
+        confidenceScore: 1.0,
+      ),
+      Fitment(
+        id: 'FIT_003',
+        cpnId: 'CPN_OIL_FILTER_TOY_001',
+        make: 'Toyota',
+        vehicleTrimId: 'Yaris 1.5 Hybrid',
+        yearFrom: 2012,
+        confidenceScore: 1.0,
+      ),
+    ];
+
+    for (var fitment in fitments) {
+      await _firestore
+          .collection('fitment')
+          .doc(fitment.id)
+          .set(fitment.toJson());
     }
 
     print('Firestore seeding completed successfully.');

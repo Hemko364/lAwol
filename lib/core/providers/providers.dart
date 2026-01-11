@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -9,6 +10,7 @@ import 'package:lawol/data/repositories/parts_repository.dart';
 import 'package:lawol/domain/models/canonical_part.dart';
 import 'package:lawol/domain/models/part_variant.dart';
 import 'package:lawol/domain/models/interchange.dart';
+import 'package:lawol/domain/models/fitment.dart';
 
 // Firebase Providers
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
@@ -58,6 +60,14 @@ final interchangesProvider = FutureProvider.family<List<Interchange>, String>((
   return ref.watch(partsRepositoryProvider).getInterchanges(cpnId);
 });
 
+/// Provider pour récupérer les affectations d'une pièce canonique
+final fitmentProvider = FutureProvider.family<List<Fitment>, String>((
+  ref,
+  cpnId,
+) {
+  return ref.watch(partsRepositoryProvider).getFitmentForCPN(cpnId);
+});
+
 /// Provider pour rechercher des variantes par référence OEM
 final oemSearchProvider = FutureProvider.family<List<PartVariant>, String>((
   ref,
@@ -80,4 +90,20 @@ final authServiceProvider = Provider<FirebaseAuthService>((ref) {
 // Auth State Provider
 final authStateProvider = StreamProvider<User?>((ref) {
   return ref.watch(authServiceProvider).authStateChanges;
+});
+
+/// Provider pour la navigation (index de la BottomNavigationBar)
+final navigationProvider = StateProvider<int>((ref) => 0);
+
+/// Provider pour l'historique des recherches
+final searchHistoryProvider = FutureProvider<List<String>>((ref) async {
+  final storage = ref.watch(secureStorageProvider);
+  final historyJson = await storage.read(key: 'search_history');
+  if (historyJson == null) return [];
+  try {
+    final List<dynamic> decoded = json.decode(historyJson);
+    return decoded.cast<String>();
+  } catch (_) {
+    return [];
+  }
 });
