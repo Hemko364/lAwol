@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lawol/presentation/ui/results/widgets/price_comparison_sheet.dart';
 import '../../../domain/models/part_search_query.dart';
 import '../../../core/providers/providers.dart';
 import '../../../domain/models/part_variant.dart';
@@ -89,6 +90,8 @@ class ResultsScreen extends ConsumerWidget {
         const SizedBox(height: 12),
         ...variants.map((v) {
           final bestPriceAsync = ref.watch(bestPriceProvider(v.mpn));
+          final pricesAsync = ref.watch(variantPricesProvider(v.mpn));
+
           final priceText = bestPriceAsync.when(
             data: (price) => price != null
                 ? '${price.amount.toStringAsFixed(2)} ${price.currency}'
@@ -97,12 +100,29 @@ class ResultsScreen extends ConsumerWidget {
             error: (_, __) => '-- €',
           );
 
+          final hasMultipleOffers = pricesAsync.when(
+            data: (prices) => prices.length >= 2,
+            loading: () => false,
+            error: (_, __) => false,
+          );
+
           return _buildEquivalentCard(
+            context,
             v.brand,
             '${v.supplier} • ${v.mpn}',
             priceText,
             'Référence OEM : ${v.oemReference ?? "N/A"}',
             brand: v.brand,
+            hasMultipleOffers: hasMultipleOffers,
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) =>
+                    PriceComparisonSheet(mpn: v.mpn, brand: v.brand),
+              );
+            },
           );
         }),
       ],
@@ -453,60 +473,114 @@ class ResultsScreen extends ConsumerWidget {
   }
 
   Widget _buildEquivalentCard(
+    BuildContext context,
     String name,
     String brandName,
     String price,
     String info, {
     String? brand,
+    bool hasMultipleOffers = false,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        children: [
-          _buildBrandLogo(brand ?? ''),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: hasMultipleOffers
+                ? Colors.blue.shade200
+                : Colors.grey.shade200,
+            width: hasMultipleOffers ? 1.5 : 1.0,
+          ),
+          boxShadow: hasMultipleOffers
+              ? [
+                  BoxShadow(
+                    color: Colors.blue.withValues(alpha: 0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          children: [
+            _buildBrandLogo(brand ?? ''),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    brandName,
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    info,
+                    style: const TextStyle(
+                      color: Colors.green,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
                 Text(
-                  brandName,
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  info,
-                  style: const TextStyle(
-                    color: Colors.green,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
+                  price,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
+                if (hasMultipleOffers) ...[
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.compare_arrows,
+                          size: 10,
+                          color: Colors.blue.shade700,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Comparer',
+                          style: TextStyle(
+                            color: Colors.blue.shade700,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                price,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.orange,
-                ),
-              ),
-              const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

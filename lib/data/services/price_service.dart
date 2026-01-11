@@ -5,13 +5,21 @@ class PriceInfo {
   final String currency;
   final String partnerName;
   final String? promoLabel;
+  final double? shippingCost;
+  final String? deliveryTime;
+  final String? productUrl;
 
   PriceInfo({
     required this.amount,
     required this.currency,
     required this.partnerName,
     this.promoLabel,
+    this.shippingCost,
+    this.deliveryTime,
+    this.productUrl,
   });
+
+  double get totalAmount => amount + (shippingCost ?? 0.0);
 }
 
 class PriceService {
@@ -23,19 +31,33 @@ class PriceService {
     ); // Simulation réseau
 
     // Simulation de données basées sur le MPN
-    if (mpn == 'BP1234') {
+    if (mpn == 'BP1234' || mpn == '0986494019') {
       return [
-        PriceInfo(amount: 45.90, currency: '€', partnerName: 'Oscaro'),
+        PriceInfo(
+          amount: 45.90,
+          currency: '€',
+          partnerName: 'Oscaro',
+          shippingCost: 4.99,
+          deliveryTime: '2-3 jours',
+          productUrl: 'https://oscaro.com',
+        ),
         PriceInfo(
           amount: 42.50,
           currency: '€',
           partnerName: 'MisterAuto',
           promoLabel: '-15%',
+          shippingCost: 0.0,
+          deliveryTime: '3-5 jours',
+          productUrl: 'https://mister-auto.com',
         ),
-      ];
-    } else if (mpn == '0986494019') {
-      return [
-        PriceInfo(amount: 38.20, currency: '€', partnerName: 'MisterAuto'),
+        PriceInfo(
+          amount: 48.00,
+          currency: '€',
+          partnerName: 'AutoDoc',
+          shippingCost: 9.95,
+          deliveryTime: '5-7 jours',
+          productUrl: 'https://autodoc.fr',
+        ),
       ];
     } else {
       return [
@@ -43,6 +65,8 @@ class PriceService {
           amount: 50.00,
           currency: '€',
           partnerName: 'Partenaire Standard',
+          shippingCost: 5.00,
+          deliveryTime: '3 jours',
         ),
       ];
     }
@@ -51,7 +75,7 @@ class PriceService {
   Future<PriceInfo?> getBestPrice(String mpn) async {
     final prices = await getPricesForVariant(mpn);
     if (prices.isEmpty) return null;
-    return prices.reduce((a, b) => a.amount < b.amount ? a : b);
+    return prices.reduce((a, b) => a.totalAmount < b.totalAmount ? a : b);
   }
 }
 
