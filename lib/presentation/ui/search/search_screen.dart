@@ -1,12 +1,18 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../results/results_screen.dart';
 import '../../../domain/models/part_search_query.dart';
+import '../../../data/services/vin_service.dart';
+import '../../../core/providers/providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends ConsumerWidget {
   const SearchScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final historyAsync = ref.watch(searchHistoryProvider);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -28,14 +34,15 @@ class SearchScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextField(
-                      textCapitalization: TextCapitalization.characters,
+                      textCapitalization: TextCapitalization.sentences,
                       decoration: const InputDecoration(
-                        hintText: 'VIN (17 car.) ou Code OEM...',
+                        hintText: 'VIN, Code OEM ou texte libre...',
                         border: InputBorder.none,
                         icon: Icon(Icons.search, color: Colors.grey),
                         contentPadding: EdgeInsets.symmetric(vertical: 14),
                       ),
-                      onSubmitted: (value) => _handleSearch(context, value),
+                      onSubmitted: (value) =>
+                          _handleSearch(context, ref, value),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -69,6 +76,64 @@ class SearchScreen extends StatelessWidget {
               ),
             ),
             const Divider(height: 1),
+            if (historyAsync.hasValue && historyAsync.value!.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.history, size: 20, color: Colors.grey),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Recherches récentes',
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () => _clearHistory(ref),
+                      child: const Text('Effacer'),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 40,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: historyAsync.value!.length,
+                  itemBuilder: (context, index) {
+                    final query = historyAsync.value![index];
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ActionChip(
+                        label: Text(
+                          query,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        onPressed: () => _handleSearch(context, ref, query),
+                        backgroundColor: Theme.of(context).primaryColor,
+                        side: BorderSide.none,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Divider(height: 1),
+            ],
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
@@ -128,9 +193,33 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  void _handleSearch(BuildContext context, String query) {
-    final cleanQuery = query.trim().toUpperCase();
+  Future<void> _saveToHistory(WidgetRef ref, String query) async {
+    final storage = ref.read(secureStorageProvider);
+    final history = await ref.read(searchHistoryProvider.future);
+
+    final newHistory = [
+      query,
+      ...history.where((q) => q != query),
+    ].take(5).toList();
+
+    await storage.write(key: 'search_history', value: json.encode(newHistory));
+    ref.invalidate(searchHistoryProvider);
+  }
+
+  Future<void> _clearHistory(WidgetRef ref) async {
+    final storage = ref.read(secureStorageProvider);
+    await storage.delete(key: 'search_history');
+    ref.invalidate(searchHistoryProvider);
+  }
+
+  void _handleSearch(BuildContext context, WidgetRef ref, String query) async {
+    final cleanQuery = query.trim();
     if (cleanQuery.isEmpty) return;
+
+    // Sauvegarder dans l'historique
+    await _saveToHistory(ref, cleanQuery);
+
+    if (!context.mounted) return;
 
     // Regex pour détecter les immatriculations (France)
     // SIV: AA-123-AA ou AA123AA
@@ -138,7 +227,8 @@ class SearchScreen extends StatelessWidget {
     // FNI: 1234 AB 56 ou 1234AB56
     final fniRegex = RegExp(r'^\d{1,4}\s?[A-Z]{2,3}\s?\d{2}$');
 
-    if (sivRegex.hasMatch(cleanQuery) || fniRegex.hasMatch(cleanQuery)) {
+    if (sivRegex.hasMatch(cleanQuery.toUpperCase()) ||
+        fniRegex.hasMatch(cleanQuery.toUpperCase())) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text(
@@ -151,34 +241,86 @@ class SearchScreen extends StatelessWidget {
     }
 
     // Logique de redirection selon le type de saisie
-    if (cleanQuery.length == 17) {
-      // VIN
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultsScreen(
-            searchQuery: PartSearchQuery(
-              partName: 'Recherche par VIN',
-              oemNumber: cleanQuery, // En attendant le décodage VIN
-              confidence: 1.0,
-            ),
-          ),
-        ),
+    if (cleanQuery.length == 17 && !cleanQuery.contains(' ')) {
+      // Afficher un indicateur de chargement
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
       );
+
+      try {
+        final vehicle = await ref.read(vinDecoderProvider(cleanQuery).future);
+        if (context.mounted) {
+          Navigator.pop(context); // Fermer le loader
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ResultsScreen(
+                searchQuery: PartSearchQuery(
+                  partName: 'Recherche par VIN',
+                  oemNumber: cleanQuery,
+                  confidence: 1.0,
+                  manufacturer:
+                      '${vehicle.make} ${vehicle.model} (${vehicle.year})',
+                ),
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Erreur décodage VIN: $e')));
+        }
+      }
+    } else if (cleanQuery.length >= 4 && cleanQuery.contains(' ')) {
+      // Si la requête semble être du texte naturel (>= 4 car. et contient un espace)
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      try {
+        final gemini = ref.read(geminiServiceProvider);
+        final analyzedQuery = await gemini.analyzeText(cleanQuery);
+
+        if (context.mounted) {
+          Navigator.pop(context); // Fermer le loader
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ResultsScreen(searchQuery: analyzedQuery),
+            ),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Erreur analyse Gemini: $e')));
+        }
+      }
     } else {
       // Code OEM
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultsScreen(
-            searchQuery: PartSearchQuery(
-              partName: 'Pièce identifiée par OEM',
-              oemNumber: cleanQuery,
-              confidence: 1.0,
+      if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultsScreen(
+              searchQuery: PartSearchQuery(
+                partName: 'Pièce identifiée par OEM',
+                oemNumber: cleanQuery,
+                confidence: 1.0,
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
