@@ -39,3 +39,22 @@
   - proposer autre mode d’identification
 - Erreur IA :
   - fallback OEM / VIN
+
+
+## R0 — Rôle de l’IA
+
+- L’IA fournit une pré-identification.
+- Elle retourne :
+  - un CPN
+  - un confidence_score Décidez ensemble :
+confidence >= 0.8 → affichage direct
+0.5 <= confidence < 0.8 → confirmation utilisateur
+< 0.5 → fallback OEM / VIN / nouvelle photo
+  - des candidats alternatifs
+- Elle ne valide jamais seule une pièce.
+- Toute décision finale est assistée par :
+  - schéma
+  - compatibilités
+  - équivalences
+
+    
