@@ -73,6 +73,64 @@ Toute identification converge vers une **pièce canonique (CPN)**.
 3. Résolution CPN
 4. Affichage écran Résultats
 
+   ## 3.1 — Identification par VIN : Choix d’intention (UX différenciante)
+
+Lorsque l’utilisateur fournit un VIN, lAwôl identifie le véhicule
+(marque, modèle, année, motorisation).
+
+Le VIN définit un **contexte véhicule**, mais pas une intention utilisateur.
+
+Après identification du véhicule, lAwôl affiche un écran intermédiaire
+permettant à l’utilisateur de préciser son intention.
+
+### Question affichée
+**Que souhaitez-vous faire ?**
+
+### Options proposées
+
+#### Option A — Identifier une pièce précise (ACTIVE — MVP)
+- L’utilisateur dispose d’une pièce à identifier
+- Actions disponibles :
+  - Scanner une pièce
+  - Entrer une référence OEM
+
+Cette option déclenche le parcours MVP principal
+(VIN → scan de pièce → résultats).
+
+#### Option B — Trouver une pièce à remplacer (INACTIVE — FUTUR)
+- L’utilisateur sait qu’une pièce doit être remplacée
+- Vous cherchez une pièce pour ce véhicule
+
+Bouton : Voir les pièces courantes
+
+Exemples :
+
+filtres
+
+freinage
+
+entretien
+
+ ATTENTION : pas un catalogue exhaustif
+
+seulement des familles à forte valeur
+- Cette option est visible mais désactivée
+- Libellé : *Disponible prochainement*
+
+#### Option C — Comprendre les compatibilités (INACTIVE — FUTUR)
+- L’utilisateur souhaite explorer les pièces compatibles
+- Bouton : Voir les véhicules compatibles
+- Bouton : Comparer les équivalences
+- Cette option est visible mais désactivée
+- Libellé : *Disponible prochainement*
+
+### Règles UX importantes
+- Une seule option est active au MVP (Option A)
+- Les options futures ne doivent pas être cliquables
+- Le message “Disponible prochainement” doit être explicite
+- Aucun catalogue exhaustif ne doit être affiché à ce stade
+
+
 ---
 
 ## 5. Écran Résultats (invariant)
