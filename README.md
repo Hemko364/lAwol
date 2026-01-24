@@ -2,7 +2,7 @@
 
 Bienvenue dans la V2 du repository du **MVP lAwôl**.
 
-Ce projet vise à construire un **assistant d’identification de pièces automobiles**, neutre et non marchand, permettant à un utilisateur d’identifier une pièce **sans expertise mécanique**, puis de prendre une **décision éclairée** avant l’achat via affiliation.
+Ce projet vise à construire un **assistant d’identification de pièces automobiles**, neutre et non marchand, permettant à un utilisateur d’identifier une pièce **sans expertise mécanique**, puis de prendre une **décision éclairée** avant l’achat via affiliation. 
 
 ---
 
@@ -27,6 +27,14 @@ lAwôl permet :
 - L’utilisateur n’a pas besoin d’être mécanicien.
 - La complexité est absorbée par le produit.
 - Toute identification converge vers une **pièce canonique (CPN)**.
+
+### UX différenciante lAwôl — Identification par VIN
+
+Contrairement aux sites classiques, lAwôl ne lance pas automatiquement
+une recherche de pièces après la saisie d’un VIN.
+
+Le VIN sert à définir un contexte véhicule.
+L’utilisateur précise ensuite son intention.
 
 ---
 
