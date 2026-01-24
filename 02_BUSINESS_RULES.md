@@ -93,5 +93,19 @@ en fonction des données d’usage et des retours terrain.
   (ex. : netteté, cadrage ou lumière insuffisante).
 - Aucun résultat approximatif ne doit être présenté.
 
+## R0.3— Choix d’intention après identification par VIN
+
+- Le VIN fournit un contexte véhicule fiable
+- Le VIN ne doit pas déclencher automatiquement un parcours pièce
+
+Après identification du véhicule via VIN :
+- lAwôl doit demander explicitement l’intention de l’utilisateur
+- l’utilisateur doit choisir une action avant toute identification de pièce
+
+Pour le MVP :
+- seule l’Option A (identifier une pièce précise) est fonctionnelle
+- les Options B et C sont visibles mais désactivées
+- aucune logique métier ne doit être implémentée pour B et C
+
 
     
