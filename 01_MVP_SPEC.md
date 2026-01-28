@@ -97,42 +97,36 @@ permettant à l’utilisateur de préciser son intention.
 Cette option déclenche le parcours MVP principal
 (VIN → scan de pièce → résultats).
 
-#### Option B — Trouver une pièce à remplacer (INACTIVE — FUTUR)
-- L’utilisateur sait qu’une pièce doit être remplacée
-- Vous cherchez une pièce pour ce véhicule
+#### Option B — Explorer les pièces compatibles avec ce véhicule (ACTIF — MVP PROGRESSIF)
 
-Bouton : Voir les pièces courantes
+- L’utilisateur ne dispose pas d’une pièce précise à identifier
+- L’utilisateur souhaite comprendre quelles pièces sont compatibles avec son véhicule
+- Cette option s’appuie sur le véhicule identifié via le VIN
 
-Exemples :
+Bouton :
+- **Voir les pièces courantes compatibles**
 
-filtres
+Comportement attendu :
+- L’application affiche une sélection de **familles de pièces à forte valeur**
+- Ces familles sont choisies pour leur :
+  - fréquence de remplacement
+  - faible risque d’erreur
+  - pertinence pour une première exploration
 
-freinage
+Exemples de familles affichées :
+- filtres
+- freinage
+- entretien courant
 
-entretien
+⚠️ ATTENTION :
+- Il ne s’agit **pas d’un catalogue exhaustif**
+- Seules des **familles de pièces à forte valeur** sont affichées
+- Aucun panier, paiement ou commande n’est affiché à ce stade
 
- ATTENTION : pas un catalogue exhaustif
-
-seulement des familles à forte valeur
-- Cette option est visible mais désactivée
-- Libellé : *Disponible prochainement*
-
-#### Option C — Comprendre les compatibilités (INACTIVE — FUTUR)
-- L’utilisateur souhaite explorer les pièces compatibles
-- Bouton : Voir les véhicules compatibles
-- Bouton : Comparer les équivalences
-- Cette option est visible mais désactivée
-- Libellé : *Disponible prochainement*
-
-### Règles UX importantes
-- Une seule option est active au MVP (Option A)
-- Les options futures ne doivent pas être cliquables
-- Le message “Disponible prochainement” doit être explicite
-- Aucun catalogue exhaustif ne doit être affiché à ce stade
-
-
----
-
+Objectif :
+- Introduire la logique de standardisation des pièces
+- Permettre à l’utilisateur de comprendre avant d’acheter
+- Préparer la décision sans la déclencher
 ## 5. Écran Résultats (invariant)
 
 L’écran Résultats est IDENTIQUE pour tous les flows.
