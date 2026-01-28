@@ -93,19 +93,49 @@ en fonction des données d’usage et des retours terrain.
   (ex. : netteté, cadrage ou lumière insuffisante).
 - Aucun résultat approximatif ne doit être présenté.
 
-## R0.3— Choix d’intention après identification par VIN
+## R3 — Logique VIN et choix d’intention
 
-- Le VIN fournit un contexte véhicule fiable
-- Le VIN ne doit pas déclencher automatiquement un parcours pièce
+- Le VIN définit un **contexte véhicule fiable**.
+- Le VIN ne doit jamais déclencher automatiquement :
+  - une recherche de pièce,
+  - un affichage de compatibilités validées,
+  - ou un affichage de prix.
 
-Après identification du véhicule via VIN :
-- lAwôl doit demander explicitement l’intention de l’utilisateur
-- l’utilisateur doit choisir une action avant toute identification de pièce
+Après saisie du VIN :
+- lAwôl affiche le véhicule identifié (marque, modèle, année, motorisation si disponible)
+- lAwôl demande explicitement l’intention de l’utilisateur
 
-Pour le MVP :
-- seule l’Option A (identifier une pièce précise) est fonctionnelle
-- les Options B et C sont visibles mais désactivées
-- aucune logique métier ne doit être implémentée pour B et C
+  ### R3.1 — Cas A : Identifier une pièce précise
+
+- L’utilisateur initie une identification par :
+  - scan de pièce
+  - ou référence OEM
+- Le véhicule issu du VIN est **pré-sélectionné** comme contexte
+- La liste complète des véhicules compatibles avec la pièce reste visible
+- L’utilisateur peut changer de véhicule à tout moment
+- Les équivalences inter-marques et les offres partenaires
+  sont affichées selon les règles SAFE / WARNING / CRITICAL
+
+  ### R3.2 — Cas B : Explorer les pièces compatibles
+
+- L’utilisateur n’identifie pas de pièce précise
+- lAwôl se limite à une **exploration guidée**, sans déclencher de décision
+
+Comportement :
+- lAwôl affiche le véhicule identifié via le VIN
+- lAwôl affiche les véhicules partageant des pièces compatibles
+- lAwôl propose un bouton :
+  "Voir les pièces courantes compatibles"
+
+Règles d’affichage :
+- l’affichage se limite à des **familles de pièces à forte valeur**
+  (ex. filtres, freinage, entretien)
+- seules les familles SAFE et WARNING sont affichables
+- les familles CRITICAL ne sont jamais affichées en mode exploration
+- aucun panier, prix ou paiement n’est affiché à ce stade
+
+
+
 
 
     
