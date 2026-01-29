@@ -93,7 +93,7 @@ en fonction des données d’usage et des retours terrain.
   (ex. : netteté, cadrage ou lumière insuffisante).
 - Aucun résultat approximatif ne doit être présenté.
 
-## R3 — Logique VIN et choix d’intention
+## R8 — Logique VIN et choix d’intention
 
 - Le VIN définit un **contexte véhicule fiable**.
 - Le VIN ne doit jamais déclencher automatiquement :
@@ -105,7 +105,7 @@ Après saisie du VIN :
 - lAwôl affiche le véhicule identifié (marque, modèle, année, motorisation si disponible)
 - lAwôl demande explicitement l’intention de l’utilisateur
 
-  ### R3.1 — Cas A : Identifier une pièce précise
+  ### R8.1 — Cas A : Identifier une pièce précise
 
 - L’utilisateur initie une identification par :
   - scan de pièce
@@ -116,7 +116,7 @@ Après saisie du VIN :
 - Les équivalences inter-marques et les offres partenaires
   sont affichées selon les règles SAFE / WARNING / CRITICAL
 
-  ### R3.2 — Cas B : Explorer les pièces compatibles
+  ### R8.2 — Cas B : Explorer les pièces compatibles
 
 - L’utilisateur n’identifie pas de pièce précise
 - lAwôl se limite à une **exploration guidée**, sans déclencher de décision
